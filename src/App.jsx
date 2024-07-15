@@ -1,4 +1,5 @@
 import Navbar from './components/Navbar'
+import Card from './components/Card'
 
 export default function App() {
   return (
@@ -7,6 +8,8 @@ export default function App() {
   
     <Navbar />
     <hr />
+
+    <Card />  
   
   </div>
   </>
