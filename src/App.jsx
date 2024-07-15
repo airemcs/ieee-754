@@ -9,7 +9,7 @@ export default function App() {
     <Navbar />
     <hr />
 
-    <Card />  
+    <Card />
   
   </div>
   </>
