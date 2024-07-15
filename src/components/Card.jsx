@@ -17,13 +17,13 @@ export default function Card() {
 
   return (
   <>
-  <div className="flex justify-center lg:p-4">
+  <div className="flex justify-center lg:p-4 mt-2">
   <div className="card bg-base-100 w-full lg:outline lg:outline-1">
-  <div className="card-body">
+  <div className="card-body lg:pb-10 lg:px-10 lg:pt-6">
 
   <div className="lg:grid lg:grid-cols-8 lg:gap-8 lg:mb-4">
 
-    <div className="w-full mb-2 lg:mb-4 col-span-3 mb-4 lg:mb-0">
+    <div className="w-full mb-2 lg:mb-0 col-span-3 mb-4 lg:mb-0">
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Operand 1</label>
       <div className="join w-full">
         <input id="" name="" type="text" placeholder="" 
@@ -33,7 +33,7 @@ export default function Card() {
       </div>
     </div>
 
-    <div className="w-full mb-2 lg:mb-4 col-span-3 mb-4 lg:mb-0">
+    <div className="w-full mb-2 lg:mb-0 col-span-3 mb-4 lg:mb-0">
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Operand 2</label>
       <div className="join w-full">
         <input id="" name="" type="text" placeholder=""
@@ -43,7 +43,7 @@ export default function Card() {
       </div>
     </div>
 
-    <div className="w-full mb-4 lg:mb-0 col-span-2">
+    <div className="w-full mb-2 lg:mb-0 col-span-2">
 
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Round Method</label>
 
@@ -91,8 +91,11 @@ export default function Card() {
 
   </div>
 
-  <button className="btn mb-4">Calculate</button>
-  <button className="btn">Export as TXT</button>
+  <div className="flex justify-center space-x-4">
+    <button className="btn flex-1">Calculate</button>
+    <button className="btn flex-1">Export as TXT</button>
+  </div>
+
 
   </div>
   </div>
