@@ -47,7 +47,7 @@ export default function Card() {
 
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Round Method</label>
 
-      <div className="join w-full relative">
+      <div className="join w-full relative mb-2 lg:mb-0">
 
         <div className="relative inline-block text-left w-full">
         
@@ -64,17 +64,17 @@ export default function Card() {
           className="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1" role="none">
 
-              <a href="#" role="menuitem" onClick={() => handleOptionClick('Half Even')}
+              <a href="#" role="menuitem" onClick={() => handleOptionClick('Round Half Even')}
               className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">
-              Half Even</a>
+              Round Half Even</a>
 
-              <a href="#" role="menuitem" onClick={() => handleOptionClick('Half Up')}
+              <a href="#" role="menuitem" onClick={() => handleOptionClick('Round Half Up')}
               className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">
-              Half Up</a>
+              Round Half Up</a>
               
-              <a href="#" role="menuitem" onClick={() => handleOptionClick('Half Down')}
+              <a href="#" role="menuitem" onClick={() => handleOptionClick('Round Half Down')}
               className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">
-              Half Down</a>
+              Round Half Down</a>
 
           </div>
           </div>
@@ -83,7 +83,7 @@ export default function Card() {
         </div>
 
         <input id="" name="" type="text" placeholder=""
-        className="join-item w-full lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
+        className="join-item w-1/2 lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
 
       </div>
 
