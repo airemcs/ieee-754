@@ -1,5 +1,6 @@
 import Navbar from './components/Navbar'
-import Card from './components/Card'
+import Input from './components/Input'
+import Output from './components/Output'
 
 export default function App() {
   return (
@@ -9,7 +10,9 @@ export default function App() {
     <Navbar />
     <hr />
 
-    <Card />
+    <Input />
+    <hr className="lg:hidden" />
+    <Output />
   
   </div>
   </>

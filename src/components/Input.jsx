@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function Card() {
+export default function Input() {
   
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -19,7 +19,7 @@ export default function Card() {
   <>
   <div className="flex justify-center lg:p-4 mt-2">
   <div className="card bg-base-100 w-full lg:outline lg:outline-1">
-  <div className="card-body lg:pb-10 lg:px-10 lg:pt-6">
+  <div className="card-body pt-4 pb-8 lg:pb-10 lg:px-10 lg:pt-6">
 
   <div className="lg:grid lg:grid-cols-8 lg:gap-8 lg:mb-4">
 
@@ -95,7 +95,6 @@ export default function Card() {
     <button className="btn flex-1">Calculate</button>
     <button className="btn flex-1">Export as TXT</button>
   </div>
-
 
   </div>
   </div>
