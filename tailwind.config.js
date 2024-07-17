@@ -9,6 +9,7 @@ export default {
   },
   plugins: [
     require('daisyui'),
+    require('tailwindcss-opentype'),
   ],
   daisyui: {
     themes: ["light", "dracula"],

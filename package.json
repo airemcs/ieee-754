@@ -15,7 +15,8 @@
     "@material-tailwind/react": "^2.1.9",
     "flowbite": "^2.4.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwindcss-opentype": "^1.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
