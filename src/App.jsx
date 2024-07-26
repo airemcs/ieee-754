@@ -12,7 +12,6 @@ export default function App() {
 
     <Input />
     <hr className="lg:hidden" />
-    <Output />
   
   </div>
   </>
