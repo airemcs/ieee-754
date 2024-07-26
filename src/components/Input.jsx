@@ -18,6 +18,125 @@ export default function Input() {
     operand2Normalized: '',
     operand2Exponent: ''
   });
+
+  const processOperands = (operand, digits) => {
+    if (roundMethod === "GRS") {
+      return applyGRS(operand, digits);
+    } else if (roundMethod === "Rounding") {
+      return applyRounding(operand, digits);
+    }
+    return operand;
+  };
+
+  function applyGRS(operand, nBits) {
+    if (typeof operand !== 'string') {
+      operand = operand.toString();
+    }
+    nBits = 8
+    let [integerPart, fractionalPart = ''] = operand.split('.');
+    if (fractionalPart.length >= nBits) {
+      let relevantFraction = fractionalPart.slice(0, nBits + 1);
+      let decimalFraction = parseInt(relevantFraction, 2) / Math.pow(2, nBits + 1);
+      let roundedDecimalFraction = Math.round(decimalFraction * Math.pow(2, nBits)) / Math.pow(2, nBits);
+      let roundedFraction = (roundedDecimalFraction * Math.pow(2, nBits)).toString(2).padStart(nBits, '0');
+      return integerPart + '.' + roundedFraction;
+    } else {
+      return integerPart + '.' + fractionalPart.padEnd(nBits, '0');
+    }
+  }
+
+  function getCarry(a, b) {
+    const aParts = a.split('.');
+    const bParts = b.split('.');
+    const aInt = parseInt(aParts[0], 2);
+    const bInt = parseInt(bParts[0], 2);
+    const aFrac = aParts[1];
+    const bFrac = bParts[1];
+    const maxLength = Math.max(aFrac.length, bFrac.length);
+    const aFracPadded = aFrac.padEnd(maxLength, '0');
+    const bFracPadded = bFrac.padEnd(maxLength, '0');
+    let carry = '';
+    let sum = 0;
+    for (let i = maxLength - 1; i >= 0; i--) {
+      sum = parseInt(aFracPadded[i], 2) + parseInt(bFracPadded[i], 2) + sum;
+      carry = (sum > 1 ? '1' : '0') + carry;
+      sum = sum > 1 ? 1 : 0;
+    }
+    sum = aInt + bInt + sum;
+    carry = sum.toString(2) + '.' + carry;
+    return carry;
+  }
+  
+  function addBinary(a, b) {
+    const aParts = a.split('.');
+    const bParts = b.split('.');
+    const aInt = parseInt(aParts[0], 2);
+    const bInt = parseInt(bParts[0], 2);
+    const aFrac = aParts[1];
+    const bFrac = bParts[1];
+    const maxLength = Math.max(aFrac.length, bFrac.length);
+    const aFracPadded = aFrac.padEnd(maxLength, '0');
+    const bFracPadded = bFrac.padEnd(maxLength, '0');
+    let sum = 0;
+    let result = '';
+    for (let i = maxLength - 1; i >= 0; i--) {
+      sum = parseInt(aFracPadded[i], 2) + parseInt(bFracPadded[i], 2) + sum;
+      result = (sum % 2).toString() + result;
+      sum = sum > 1 ? 1 : 0;
+    }
+    sum = aInt + bInt + sum;
+    result = sum.toString(2) + '.' + result;
+    return result;
+  }
+
+  const applyRounding = (operand, significantDigits) => {
+    if (operand === "0") return '0';
+    let [integerPart, fractionalPart = ""] = operand.split('.');
+    const requiredFractionalLength = significantDigits - integerPart.length;
+    let paddedFractionalPart = fractionalPart.padEnd(requiredFractionalLength + 1, '0');
+    let roundingDigit = paddedFractionalPart[requiredFractionalLength];
+    let remainingDigits = paddedFractionalPart.slice(requiredFractionalLength + 1);
+    let significantPart = paddedFractionalPart.slice(0, requiredFractionalLength);
+    if (roundingDigit === '1' && (remainingDigits.includes('1') || parseInt(significantPart[requiredFractionalLength - 1]) % 2 !== 0)) {
+      let carry = 1;
+      significantPart = significantPart.split('').reverse().map(d => {
+        if (carry === 0) return d;
+        if (d === '0') {
+          carry = 0;
+          return '1';
+        } else {
+          return '0';
+        }
+      }).reverse().join('');
+      if (carry === 1) {
+        significantPart = '1' + significantPart;
+      }
+    }
+    significantPart = significantPart.slice(0, requiredFractionalLength).padEnd(requiredFractionalLength, '0');
+    return `${integerPart}.${significantPart}`;
+  };
+
+  const normalizeResult = (result, exponent) => {
+    const parts = result.split('.');
+    let integerPart = parts[0];
+    let fractionalPart = parts[1];
+    let newExponent = exponent;
+    while (integerPart.length > 1 || integerPart[0] >= '2') {
+      fractionalPart = integerPart.slice(-1) + fractionalPart;
+      integerPart = integerPart.slice(0, -1);
+      newExponent++;
+    }
+    while (integerPart === '0') {
+      integerPart = fractionalPart.slice(0, 1);
+      fractionalPart = fractionalPart.slice(1);
+      newExponent--;
+    }
+  
+    return {
+      normalizedResult: integerPart + '.' + fractionalPart,
+      normalizedExponent: newExponent,
+    };
+  };
   
   const isCalculateButtonEnabled = () => {
     return operand1!== '' && operand2!== '' && numberOfDigits!== '' && roundMethod!== '';
@@ -104,6 +223,8 @@ export default function Input() {
     return normalized;
   };
 
+  
+
   return (
   <>
   <div className="flex justify-center lg:p-4 mt-2">
@@ -175,24 +296,45 @@ export default function Input() {
 
   <div className="flex justify-center space-x-4">
       <button onClick={handleCalculate} disabled={!isCalculateButtonEnabled()} className="btn flex-1">Calculate</button>
-      <CreateFile />
+      <CreateFile operand1={operand1}
+          operand2={operand2}
+          operand1ExponentO={operand1Exponent}
+          operand2ExponentO={operand2Exponent}
+          operand1Normalized={normalizedValues.operand1Normalized} 
+          operand1Exponent={normalizedValues.operand1Exponent}
+          operand2Normalized={normalizedValues.operand2Normalized} 
+          operand2Exponent={normalizedValues.operand2Exponent}
+          numberOfDigits={numberOfDigits}
+          roundMethod={roundMethod}
+          processOperands={processOperands}
+          applyGRS={applyGRS}
+          getCarry={getCarry}
+          addBinary={addBinary}
+          applyRounding={applyRounding}
+          normalizeResult={normalizeResult}/>
     </div>
-
   </div>
   </div>
   </div>
   
   <Output 
-  operand1={operand1}
-  operand2={operand2}
-  operand1ExponentO={operand1Exponent}
-  operand2ExponentO={operand2Exponent}
-  operand1Normalized={normalizedValues.operand1Normalized} 
-  operand1Exponent={normalizedValues.operand1Exponent}
-  operand2Normalized={normalizedValues.operand2Normalized} 
-  operand2Exponent={normalizedValues.operand2Exponent}
-  numberOfDigits={numberOfDigits}
-  roundMethod={roundMethod}/>
+          operand1={operand1}
+          operand2={operand2}
+          operand1ExponentO={operand1Exponent}
+          operand2ExponentO={operand2Exponent}
+          operand1Normalized={normalizedValues.operand1Normalized} 
+          operand1Exponent={normalizedValues.operand1Exponent}
+          operand2Normalized={normalizedValues.operand2Normalized} 
+          operand2Exponent={normalizedValues.operand2Exponent}
+          numberOfDigits={numberOfDigits}
+          roundMethod={roundMethod}
+          processOperands={processOperands}
+          applyGRS={applyGRS}
+          getCarry={getCarry}
+          addBinary={addBinary}
+          applyRounding={applyRounding}
+          normalizeResult={normalizeResult}
+        />
   </>
   )
 }
