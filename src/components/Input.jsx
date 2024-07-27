@@ -3,6 +3,7 @@ import Output from './Output';
 import CreateFile from './CreateFile';
 
 export default function Input() {
+  
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [operand1, setOperand1] = useState('');
@@ -12,6 +13,7 @@ export default function Input() {
   const [numberOfDigits, setNumberOfDigits] = useState('');
   const [roundMethod, setRoundMethod] = useState('');
   const [errors, setErrors] = useState({ operand1: false, operand2: false });
+  const [showOutput, setShowOutput] = useState(false);
   const [normalizedValues, setNormalizedValues] = useState({
     operand1Normalized: '',
     operand1Exponent: '',
@@ -180,6 +182,9 @@ export default function Input() {
         operand2Normalized,
         operand2Exponent: maxExponent
       });
+      setShowOutput(true);
+    } else {
+      setShowOutput(false);
     }
   };
 
@@ -233,92 +238,100 @@ export default function Input() {
 
   <div className="lg:grid lg:grid-cols-12 lg:gap-8 lg:mb-4">
 
-    <div className="w-full mb-2 lg:mb-0 col-span-3 mb-4 lg:mb-0">
+    <div className="w-full col-span-3 mb-4 lg:mb-0">
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Operand 1</label>
       <div className="join w-full">
         <input type="text" placeholder="" value={operand1} onChange={(e) => setOperand1(e.target.value)}  
         className={`join-item w-full text-lg rounded-md py-1.5 px-3 ring-1 ring-inset ${errors.operand1 ? 'ring-red-500' : 'ring-gray-300'}`}/>
-        <input type="text" id="" aria-label="" value="x 2" disabled
+        <input type="text" id="" aria-label="" value="x 2 ^" disabled
         className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed"/>
-        <input id="" name="" type="number" placeholder="exponent" value={operand1Exponent}
+        <input id="" name="" type="number" placeholder="" value={operand1Exponent}
           onChange={(e) => setOperand1Exponent(e.target.value)}
-          className="join-item w-1/2 lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
+          className="join-item w-1/4 lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
       </div>
     </div>
-    <div className="w-full mb-2 lg:mb-0 col-span-3 mb-4 lg:mb-0">
+    
+    <div className="w-full col-span-3 mb-4 lg:mb-0">
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Operand 2</label>
       <div className="join w-full">
         <input type="text" placeholder="" value={operand2} onChange={(e) => setOperand2(e.target.value)}  
         className={`join-item w-full text-lg rounded-md py-1.5 px-3 ring-1 ring-inset ${errors.operand2 ? 'ring-red-500' : 'ring-gray-300'}`} />
-        <input type="text" id="" aria-label="" value="x 2" disabled
+        <input type="text" id="" aria-label="" value="x 2 ^" disabled
         className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed"/>
-        <input id="" name="" type="number" placeholder="exponent" value={operand2Exponent}
+        <input id="" name="" type="number" placeholder="" value={operand2Exponent}
           onChange={(e) => setOperand2Exponent(e.target.value)}
-          className="join-item w-1/2 lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
+          className="join-item w-1/4 lg:w-1/4 text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
       </div>
     </div>
+
     <div className="w-full mb-2 lg:mb-0 col-span-3">
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Number of Digits</label>
       <div className="join w-full">
-      <input name="" type="number" placeholder="digits" value={numberOfDigits} onChange={handleNumberOfDigitsChange} 
+      <input name="" type="number" placeholder="" value={numberOfDigits} onChange={handleNumberOfDigitsChange} 
        className="join-item w-full lg:w-full text-lg pb-2 rounded-md py-1.5 px-3 ring-1 ring-inset ring-gray-300"/>
       </div>
     </div>
-     <div className="w-full mb-2 lg:mb-0 col-span-3">
+
+    <div className="w-full mb-2 lg:mb-0 col-span-3">
 
       <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">Round Method</label>
       <div className="join w-full relative mb-2 lg:mb-0">
 
-        <div className="relative inline-block text-left w-full">
-          <button type="button" id="menu-button" aria-expanded="true" aria-haspopup="true" onClick={toggleDropdown}
-            className="join-item pt-2.5 h-full inline-flex w-full justify-between rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
-            {selectedOption || 'Select Method'}
-            <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02l3.72 3.79 3.72-3.79a.75.75 0 111.08 1.04l-4.25 4.33a.75.75 0 01-1.08 0l-4.25-4.33a.75.75 0 01-.02-1.06z" clipRule="evenodd" />
-            </svg>
-          </button>
-          {isOpen && (
-            <div role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
-              className="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1" role="none">
-                <a href="#" role="menuitem" onClick={() => handleOptionClick('GRS')}
-                  className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">GRS</a>
-                <a href="#" role="menuitem" onClick={() => handleOptionClick('Rounding')}
-                  className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">Rounding</a>
-              </div>
+      <div className="relative inline-block text-left w-full">
+
+        <button type="button" id="menu-button" aria-expanded="true" aria-haspopup="true" onClick={toggleDropdown}
+          className="join-item pt-2.5 h-full inline-flex w-full justify-between rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+          {selectedOption || 'Select Method'}
+          <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02l3.72 3.79 3.72-3.79a.75.75 0 111.08 1.04l-4.25 4.33a.75.75 0 01-1.08 0l-4.25-4.33a.75.75 0 01-.02-1.06z" clipRule="evenodd" />
+          </svg>
+        </button>
+
+        {isOpen && (
+          <div role="menu" aria-orientation="vertical" aria-labelledby="menu-button"
+            className="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="py-1" role="none">
+              <a href="#" role="menuitem" onClick={() => handleOptionClick('GRS')}
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">GRS</a>
+              <a href="#" role="menuitem" onClick={() => handleOptionClick('Rounding')}
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">Rounding</a>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
       </div>
+
     </div>
 
   </div>
+  </div>
 
-  <div className="flex justify-center space-x-4">
+    <div className="flex justify-center space-x-4">
       <button onClick={handleCalculate} disabled={!isCalculateButtonEnabled()} className="btn flex-1">Calculate</button>
       <CreateFile operand1={operand1}
-          operand2={operand2}
-          operand1ExponentO={operand1Exponent}
-          operand2ExponentO={operand2Exponent}
-          operand1Normalized={normalizedValues.operand1Normalized} 
-          operand1Exponent={normalizedValues.operand1Exponent}
-          operand2Normalized={normalizedValues.operand2Normalized} 
-          operand2Exponent={normalizedValues.operand2Exponent}
-          numberOfDigits={numberOfDigits}
-          roundMethod={roundMethod}
-          processOperands={processOperands}
-          applyGRS={applyGRS}
-          getCarry={getCarry}
-          addBinary={addBinary}
-          applyRounding={applyRounding}
-          normalizeResult={normalizeResult}/>
+      operand2={operand2}
+      operand1ExponentO={operand1Exponent}
+      operand2ExponentO={operand2Exponent}
+      operand1Normalized={normalizedValues.operand1Normalized} 
+      operand1Exponent={normalizedValues.operand1Exponent}
+      operand2Normalized={normalizedValues.operand2Normalized} 
+      operand2Exponent={normalizedValues.operand2Exponent}
+      numberOfDigits={numberOfDigits}
+      roundMethod={roundMethod}
+      processOperands={processOperands}
+      applyGRS={applyGRS}
+      getCarry={getCarry}
+      addBinary={addBinary}
+      applyRounding={applyRounding}
+      normalizeResult={normalizeResult}/>
     </div>
+
   </div>
   </div>
   </div>
-  
-  <Output 
-          operand1={operand1}
+
+  {showOutput && (
+          <Output operand1={operand1}
           operand2={operand2}
           operand1ExponentO={operand1Exponent}
           operand2ExponentO={operand2Exponent}
@@ -333,8 +346,9 @@ export default function Input() {
           getCarry={getCarry}
           addBinary={addBinary}
           applyRounding={applyRounding}
-          normalizeResult={normalizeResult}
-        />
+          normalizeResult={normalizeResult} />
+        )}
+
   </>
   )
 }

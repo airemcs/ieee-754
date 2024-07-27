@@ -14,72 +14,82 @@ export default function Output({operand1Normalized,operand1Exponent,operand2Norm
             <label htmlFor="">Aligning Decimal Points</label>
             <div className="lg:flex justify-center space-y-4 lg:space-y-0 lg:space-x-4 mb-2">
               <div className="join flex-1">
-                <input type="text" value={operand1Normalized || "X . X X"} disabled
+                <input type="text" value={operand1Normalized || ""} disabled
                   className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : "x 2^2"} disabled
+                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
               <div className="join flex-1">
-                <input type="text" value={operand2Normalized || "Y . Y Y"} disabled
+                <input type="text" value={operand2Normalized || ""} disabled
                   className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : "x 2^7"} disabled
+                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
             </div>
-            <label htmlFor="">Rounding to required length</label>
+            <label htmlFor="">Rounding to Required Length (Digits)</label>
             <div className="lg:flex justify-center space-y-4 lg:space-y-0 lg:space-x-4 mb-2">
               <div className="join flex-1">
-                <input type="text" value={Operand1RequiredLength || "X . X X"} disabled
+                <input type="text" value={Operand1RequiredLength || ""} disabled
                   className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : "x 2^2"} disabled
+                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
               <div className="join flex-1">
-                <input type="text" value={Operand2RequiredLength || "Y . Y Y"} disabled
+                <input type="text" value={Operand2RequiredLength || ""} disabled
                   className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : "x 2^7"} disabled
+                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
             </div>
+
             <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2">2. Computation</label>
-            <div className="lg:flex justify-center space-y-0 lg:space-y-0 mb-2 flex-col w-full">
+
+            <div className="lg:flex justify-center space-y-0 lg:space-y-0 mb-2 flex-col w-full gap-y-0 lg:gap-y-4">
+
               <div className="join flex-1 ml-5">
-                <input type="text" value={Operand1RequiredLength || "X . X X"} disabled
+                <input type="text" value={Operand1RequiredLength || ""} disabled
                   className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : "x 2^2"} disabled
+                <input type="text" value={operand1Exponent ? `x 2^${operand1Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
+
               <div className="flex flex-1 rounded-lg flex-row gap-2.5 items-center">
                 <div>+</div>
-                <div className="w-full">
-                  <input type="text" value={Operand2RequiredLength || "Y . Y Y"} disabled
+                <div className="join w-full">
+                  <input type="text" value={Operand2RequiredLength || ""} disabled
                     className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                  <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : "x 2^7"} disabled
+                  <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : ""} disabled
                     className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                 </div>
               </div>
-              <div className="flex-1 rounded-lg ml-5 flex ">
-                <input type="text" id="" aria-label="" value={Operand1RequiredLength && Operand2RequiredLength ? addBinary(Operand1RequiredLength, Operand2RequiredLength) : "answer"} disabled
+
+              <div className="flex flex-1 rounded-lg flex-row gap-2.5 items-center">
+                <div>=</div>
+              <div className="join w-full">
+                <input type="text" id="" aria-label="" value={Operand1RequiredLength && Operand2RequiredLength ? addBinary(Operand1RequiredLength, Operand2RequiredLength) : ""} disabled
                   className="rounded-lg lg:join-item w-3/4 text-lg rounded-l-lg lg:rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : "x 2^7"} disabled
+                <input type="text" value={operand2Exponent ? `x 2^${operand2Exponent}` : ""} disabled
                   className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
               </div>
+              </div>
+
             </div>
+
             <label htmlFor="" className="block text-xl lg:text-2xl font-medium mb-2 lg:mb-4">3. IEEE-754/1985 Floating-Point Format</label>
             <div className="flex flex-row w-full mb-4 lg:mb-0">
               <div className="w-full mb-2 flex flex-col gap-2">
                 <label htmlFor="">Normalized Answer</label>
-                <div className="w-full">
-                  <input type="text" value={normalizeResult(result, operand2Exponent).normalizedResult || "Y . Y Y"} disabled
+                <div className="join w-full">
+                  <input type="text" value={normalizeResult(result, operand2Exponent).normalizedResult || ""} disabled
                     className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                  <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : "x 2^7"} disabled
+                  <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : ""} disabled
                     className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                 </div>
                 <label htmlFor="">Rounded Answer</label>
-                <div className="w-full">
-                  <input type="text" value={applyRounding(normalizeResult(result, operand2Exponent).normalizedResult, numberOfDigits) || "Y . Y Y"} disabled
+                <div className="join w-full">
+                  <input type="text" value={applyRounding(normalizeResult(result, operand2Exponent).normalizedResult, numberOfDigits) || ""} disabled
                     className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
-                  <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : "x 2^7"} disabled
+                  <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : ""} disabled
                     className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                 </div>
               </div>
