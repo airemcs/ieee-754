@@ -36,7 +36,7 @@ export default function Input() {
     }
     nBits = 8
     let [integerPart, fractionalPart = ''] = operand.split('.');
-    if (fractionalPart.length >= nBits) {
+    if (fractionalPart.length > nBits) {
       let relevantFraction = fractionalPart.slice(0, nBits + 1);
       let decimalFraction = parseInt(relevantFraction, 2) / Math.pow(2, nBits + 1);
       let roundedDecimalFraction = Math.round(decimalFraction * Math.pow(2, nBits)) / Math.pow(2, nBits);
