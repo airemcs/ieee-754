@@ -308,7 +308,8 @@ export default function Input() {
 
     <div className="flex justify-center space-x-4">
       <button onClick={handleCalculate} disabled={!isCalculateButtonEnabled()} className="btn flex-1">Calculate</button>
-      <CreateFile operand1={operand1}
+      <CreateFile isDisabled={!isCalculateButtonEnabled()}
+      operand1={operand1}
       operand2={operand2}
       operand1ExponentO={operand1Exponent}
       operand2ExponentO={operand2Exponent}

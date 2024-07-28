@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CreateFile({ operand1Normalized, operand1Exponent, operand2Normalized, operand2Exponent, numberOfDigits, roundMethod, processOperands, applyGRS, getCarry, addBinary, applyRounding, normalizeResult }) {
+export default function CreateFile({ operand1Normalized, operand1Exponent, operand2Normalized, operand2Exponent, numberOfDigits, roundMethod, processOperands, applyGRS, getCarry, addBinary, applyRounding, normalizeResult, isDisabled }) {
   const createFile = () => {
     const content = `
       Operand 1 Normalized: ${operand1Normalized}
@@ -25,8 +25,10 @@ export default function CreateFile({ operand1Normalized, operand1Exponent, opera
   };
 
   return (
-    <button onClick={createFile} className="btn flex-1">
+  <>    
+    <button onClick={createFile} className="btn flex-1" disabled={isDisabled}>
       Create File
     </button>
+  </>
   );
 }
