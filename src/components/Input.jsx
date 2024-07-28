@@ -324,7 +324,8 @@ export default function Input() {
       getCarry={getCarry}
       addBinary={addBinary}
       applyRounding={applyRounding}
-      normalizeResult={normalizeResult}/>
+      normalizeResult={normalizeResult}
+      />
     </div>
 
   </div>
