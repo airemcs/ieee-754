@@ -2,7 +2,7 @@
 # IEEE-754 binary-32 Floating Point Operation Application 
 
 DEMO:
-[![Watch the demo]](https://raw.githubusercontent.com/gitnadu/ieee-754/main/assets/demo.mp4)
+[![Watch the demo]](https://www.youtube.com/watch?v=3NgYdx0HWug)
 
 Website URL deployed with render:
 https://ieee-754.onrender.com/
