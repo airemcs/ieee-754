@@ -2,6 +2,11 @@ import React from 'react';
 
 export default function CreateFile({ operand1, operand2, operand1ExponentO, operand2ExponentO, operand1Normalized, operand1Exponent, operand2Normalized, operand2Exponent, numberOfDigits, roundMethod, processOperands, applyGRS, getCarry, addBinary, applyRounding, normalizeResult, isDisabled }) {
   const createFile = () => {
+
+    
+    const op1Req = processOperands(operand1Normalized, numberOfDigits)
+    const op2Req = processOperands(operand2Normalized, numberOfDigits)
+    const result = addBinary(op1Req, op2Req)
     const content = `Operand 1 Details:
   Original Operand 1: ${operand1}
   Original Operand 1 Exponent: ${operand1ExponentO}
@@ -19,12 +24,21 @@ Additional Details:
   Rounding Method: ${roundMethod}
 
 Processes:
-  Operand1 Required Length: ${processOperands(operand1Normalized, numberOfDigits)}
-  Operand2 Required Length: ${processOperands(operand2Normalized, numberOfDigits)}
-  Add Binary: ${addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits))}
-  Apply Rounding: ${applyRounding(normalizeResult(addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits)), operand2Exponent).normalizedResult, numberOfDigits)}
-  Normalize Result: ${normalizeResult(addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits)), operand2Exponent).normalizedResult}
-`;
+  Operand1 Required Length: ${op1Req} + x 2^${operand2Exponent}
+  Operand2 Required Length: ${op2Req} + x 2^${operand2Exponent}
+
+Computation:
+    Operand1 Required Length: ${op1Req} + x 2^${operand2Exponent}
+  + Operand2 Required Length: ${op2Req} + x 2^${operand2Exponent}
+  -----------------------------------------------                       
+                              ${addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits))} + x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}
+  
+Answer:
+  Normalize Result: ${normalizeResult(addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits)), operand2Exponent).normalizedResult} + x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}
+  Apply Rounding: ${applyRounding(normalizeResult(addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits)), operand2Exponent).normalizedResult, numberOfDigits)} + x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}
+  Final Answer: ${applyRounding(normalizeResult(addBinary(processOperands(operand1Normalized, numberOfDigits), processOperands(operand2Normalized, numberOfDigits)), operand2Exponent).normalizedResult, numberOfDigits)} + x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}
+
+  `;
     const blob = new Blob([content], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
