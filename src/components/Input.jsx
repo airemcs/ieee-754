@@ -45,7 +45,7 @@ export default function Input() {
     if (typeof operand !== 'string') {
       operand = operand.toString();
     }
-    nBits = 8
+    nBits = parseInt(nBits) + 2
     let [integerPart, fractionalPart = ''] = operand.split('.');
     if (fractionalPart.length > nBits) {
       let relevantFraction = fractionalPart.slice(0, nBits + 1);
