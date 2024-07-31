@@ -8,6 +8,10 @@ export default function Input() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [operand1, setOperand1] = useState('');
   const [operand2, setOperand2] = useState('');
+
+  let isOperand1Negative = false;
+  let isOperand2Negative = false;
+
   const [operand1Exponent, setOperand1Exponent] = useState('');
   const [operand2Exponent, setOperand2Exponent] = useState('');
   const [numberOfDigits, setNumberOfDigits] = useState('');
@@ -20,6 +24,13 @@ export default function Input() {
     operand2Normalized: '',
     operand2Exponent: ''
   });
+
+  const [ifPositiveInfinity, setIfPositiveInfinity] = useState(false);
+  const [ifNaN, setIfNaN] = useState(false);
+
+
+
+
 
   const processOperands = (operand, digits) => {
     if (roundMethod === "GRS") {
@@ -133,15 +144,22 @@ export default function Input() {
       fractionalPart = fractionalPart.slice(1);
       newExponent--;
     }
+
+    if(newExponent > 127){
+      setIfPositiveInfinity(true);
+    }else{
+      setIfPositiveInfinity(false);
+    }
   
     return {
       normalizedResult: integerPart + '.' + fractionalPart,
       normalizedExponent: newExponent,
     };
   };
+
   
   const isCalculateButtonEnabled = () => {
-    return operand1!== '' && operand2!== '' && numberOfDigits!== '' && roundMethod!== '';
+    return operand1!== '' && operand2!== '' && numberOfDigits!== '' && roundMethod!== '' && operand1Exponent!== '' && operand2Exponent!== '';
   };
 
   const toggleDropdown = () => {
@@ -163,19 +181,41 @@ export default function Input() {
   };
   
   const handleCalculate = () => {
-    const isOperand1Valid = /^[01.]+$/.test(operand1);
-    const isOperand2Valid = /^[01.]+$/.test(operand2);
+    const isOperand1Valid = /^-?[01.]+$/.test(operand1);
+    const isOperand2Valid = /^-?[01.]+$/.test(operand2);
     const isOperand1ExponentValid = /^-?\d+$/.test(operand1Exponent);
     const isOperand2ExponentValid = /^-?\d+$/.test(operand2Exponent);
   
     if (isOperand1Valid && isOperand2Valid && isOperand1ExponentValid && isOperand2ExponentValid) {
-      let { normalized: operand1Normalized, newExponent: operand1NewExponent } = initialNormalize(operand1, parseInt(operand1Exponent));
-      let { normalized: operand2Normalized, newExponent: operand2NewExponent } = initialNormalize(operand2, parseInt(operand2Exponent));
+      let { normalized: operand1Normalized, newExponent: operand1NewExponent } = initialNormalize(operand1, parseInt(operand1Exponent), true);
+      let { normalized: operand2Normalized, newExponent: operand2NewExponent } = initialNormalize(operand2, parseInt(operand2Exponent), false);
+
+      // denormalize
+      if (operand1NewExponent < -126){
+        let {combined: newOperand, shift: shift} = deNormalize(operand1Normalized, operand1NewExponent, -126);
+        operand1Normalized = newOperand;
+        operand1NewExponent = operand1NewExponent + shift
+      }
+
+      // denormalize
+      if (operand2NewExponent < -126){
+        let {combined: newOperand, shift: shift} = deNormalize(operand2Normalized, operand2NewExponent, -126);
+        operand2Normalized = newOperand;
+        operand2NewExponent = operand2NewExponent + shift
+      }
+
+      if (operand1NewExponent > 127 || operand2NewExponent > 127){
+        setIfPositiveInfinity(true);
+      }else{
+        setIfPositiveInfinity(false);
+      }
+
       const maxExponent = Math.max(operand1NewExponent, operand2NewExponent);
-      operand1Normalized = reNormalize(operand1Normalized, operand1NewExponent, maxExponent);
+      operand1Normalized = reNormalize(operand1Normalized, operand1NewExponent, maxExponent, isOperand1Negative);
       operand1NewExponent = maxExponent;
-      operand2Normalized = reNormalize(operand2Normalized, operand2NewExponent, maxExponent);
+      operand2Normalized = reNormalize(operand2Normalized, operand2NewExponent, maxExponent, isOperand2Negative);
       operand2NewExponent = maxExponent; 
+
       setNormalizedValues({
         operand1Normalized,
         operand1Exponent: maxExponent,
@@ -188,24 +228,55 @@ export default function Input() {
     }
   };
 
-  const initialNormalize = (operand, exponent) => {
+  const flagOperand1 = (boolean) => {
+    isOperand1Negative = boolean;
+  }
+
+  const flagOperand2 = (boolean) => {
+    isOperand2Negative = boolean;
+  }
+
+  const initialNormalize = (operand, exponent, whichOperand) => {
+
     let [intPart, fracPart = ''] = operand.split('.');
+
+    if (operand[0] === "-") {
+    
+      if(whichOperand){
+        flagOperand1(true)
+      }else{
+        flagOperand2(true)
+      }
+    }else{
+      if(whichOperand){
+        flagOperand1(false)
+      }else{
+        flagOperand2(false)
+      }
+    }
+    
+
     if (intPart.length > 1 && intPart !== '0') {
+
       let leftMostOneIndex = intPart.indexOf('1');
       let newExponent = exponent + (intPart.length - leftMostOneIndex - 1);
       let normalized = intPart[leftMostOneIndex] + '.' + intPart.slice(leftMostOneIndex + 1) + fracPart;
+
       return { normalized, newExponent };
     }
+
     if (intPart === '0' && fracPart.length > 0) {
       let leftMostOneIndex = fracPart.indexOf('1');
       let newExponent = exponent - leftMostOneIndex - 1;
       let normalized = '1.' + fracPart.slice(leftMostOneIndex + 1);
+
       return { normalized, newExponent };
     }
+
     return { normalized: operand, newExponent: exponent };
   };
 
-  const reNormalize = (normalized, currentExponent, targetExponent) => {
+  const deNormalize = (normalized, currentExponent, targetExponent) => {
     const shift = targetExponent - currentExponent;
     let [intPart, fracPart = ''] = normalized.split('.');
   
@@ -214,6 +285,59 @@ export default function Input() {
       let combined = intPart + fracPart ; 
       combined = zeroPadding + combined; 
       combined = `0.${combined}`;
+      return {combined: combined, shift: shift};
+    } else if (shift < 0) {
+      const actualShift = Math.abs(shift);
+      let combined = intPart + fracPart ; 
+      if (combined.length > actualShift) {   
+        combined = combined.substr(0, combined.length - actualShift) + '.' + combined.substr(combined.length - actualShift);
+      } else {
+        combined = '0.' + '0'.repeat(actualShift - combined.length) + combined;
+      }
+      return {combined:combined, shift:actualShift};
+    }
+    return {combined:normalized, shift:shift};
+  };
+
+  const reNormalize = (normalized, currentExponent, targetExponent, isNegative) => {
+    
+    const shift = targetExponent - currentExponent;
+    let [intPart, fracPart = ''] = normalized.split('.');
+  
+    if (shift > 0) {
+      const zeroPadding = '0'.repeat(shift-1);
+      let combined = intPart + fracPart ; 
+      combined = zeroPadding + combined; 
+      combined = `0.${combined}`;
+
+      if(isNegative) // meaning the operand is negative
+      {
+        let [intPart, fracPart = ''] = combined.split('.'); // split them
+        intPart = intPart.replace("-","");// remove the negative
+
+        // flip everything
+
+        intPart = intPart.replaceAll("0","2");
+        intPart = intPart.replaceAll("1","0");
+        intPart = intPart.replaceAll("2","1");
+
+        let leftmostIndex = fracPart.length - 1;
+
+        while(fracPart[leftmostIndex] !== "1"){
+          leftmostIndex--;
+        }
+
+        let fracLeft = fracPart.slice(0, leftmostIndex); // flip
+        const fracRight = fracPart.slice(leftmostIndex); // no change
+
+        fracLeft = fracLeft.replaceAll("0","2");
+        fracLeft = fracLeft.replaceAll("1","0");
+        fracLeft = fracLeft.replaceAll("2","1");
+        fracPart = fracLeft + fracRight
+        combined = intPart+ '.' +  fracPart;
+      }
+
+
       return combined;
     } else if (shift < 0) {
       const actualShift = Math.abs(shift);
@@ -223,8 +347,64 @@ export default function Input() {
       } else {
         combined = '0.' + '0'.repeat(actualShift - combined.length) + combined;
       }
+
+      if(isNegative) // meaning the operand is negative
+      {
+        let [intPart, fracPart = ''] = combined.split('.'); // split them
+        intPart = intPart.replace("-","");// remove the negative
+
+        // flip everything
+        intPart = intPart.replaceAll("0","2");
+        intPart = intPart.replaceAll("1","0");
+        intPart = intPart.replaceAll("2","1");
+
+        let leftmostIndex = fracPart.length - 1;
+
+        while(fracPart[leftmostIndex] !== "1"){
+          leftmostIndex--;
+        }
+
+        let fracLeft = fracPart.slice(0, leftmostIndex); // flip
+        const fracRight = fracPart.slice(leftmostIndex); // no change
+
+
+        fracLeft = fracLeft.replaceAll("0","2");
+        fracLeft = fracLeft.replaceAll("1","0");
+        fracLeft = fracLeft.replaceAll("2","1");
+        fracPart = fracLeft + fracRight
+        combined = intPart+ '.' +  fracPart;
+      }
       return combined;
     }
+
+    if(isNegative) // meaning the operand is negative
+    {
+      let [intPart, fracPart = ''] = normalized.split('.'); // split them
+      intPart = intPart.replace("-","");// remove the negative
+
+      // flip everything
+
+      intPart = intPart.replaceAll("0","2");
+      intPart = intPart.replaceAll("1","0");
+      intPart = intPart.replaceAll("2","1");
+
+      let leftmostIndex = fracPart.length - 1;
+
+      while(fracPart[leftmostIndex] !== "1"){
+        leftmostIndex--;
+      }
+
+      let fracLeft = fracPart.slice(0, leftmostIndex); // flip
+      const fracRight = fracPart.slice(leftmostIndex); // no change
+
+
+      fracLeft = fracLeft.replaceAll("0","2");
+      fracLeft = fracLeft.replaceAll("1","0");
+      fracLeft = fracLeft.replaceAll("2","1");
+      fracPart = fracLeft + fracRight
+      normalized = intPart+ '.' +  fracPart;
+    }
+
     return normalized;
   };
 
@@ -348,7 +528,8 @@ export default function Input() {
           getCarry={getCarry}
           addBinary={addBinary}
           applyRounding={applyRounding}
-          normalizeResult={normalizeResult} />
+          normalizeResult={normalizeResult} 
+          ifPositiveInfinity ={ifPositiveInfinity} />
         )}
 
   </>

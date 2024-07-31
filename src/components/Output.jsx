@@ -1,4 +1,4 @@
-export default function Output({operand1Normalized,operand1Exponent,operand2Normalized,operand2Exponent,numberOfDigits,processOperands,addBinary,applyRounding,normalizeResult}) {
+export default function Output({operand1Normalized,operand1Exponent,operand2Normalized,operand2Exponent,numberOfDigits,processOperands,addBinary,applyRounding,normalizeResult, ifPositiveInfinity}) {
 
   const Operand1RequiredLength = processOperands(operand1Normalized, numberOfDigits);
   const Operand2RequiredLength = processOperands(operand2Normalized, numberOfDigits);
@@ -80,14 +80,14 @@ export default function Output({operand1Normalized,operand1Exponent,operand2Norm
               <div className="w-full mb-2 flex flex-col gap-2">
                 <label htmlFor="">Normalized Answer</label>
                 <div className="join w-full">
-                  <input type="text" value={normalizeResult(result, operand2Exponent).normalizedResult || ""} disabled
+                  <input type="text" value={ifPositiveInfinity ? ("+ infinity") : (normalizeResult(result, operand2Exponent).normalizedResult || "")} disabled
                     className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                   <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : ""} disabled
                     className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                 </div>
                 <label htmlFor="">Rounded Answer</label>
                 <div className="join w-full">
-                  <input type="text" value={applyRounding(normalizeResult(result, operand2Exponent).normalizedResult, numberOfDigits) || ""} disabled
+                  <input type="text" value={ifPositiveInfinity ? ("+ infinity") : (applyRounding(normalizeResult(result, operand2Exponent).normalizedResult, numberOfDigits) || "")} disabled
                     className="join-item w-3/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
                   <input type="text" value={operand2Exponent ? `x 2^${normalizeResult(result, operand2Exponent).normalizedExponent}` : ""} disabled
                     className="join-item w-1/4 text-lg rounded-lg py-1.5 px-3 bg-gray-100 border border-gray-300 cursor-not-allowed" />
