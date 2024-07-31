@@ -14,15 +14,15 @@ npm i
 npm run dev
 
 Features:
-IEEE-754 binary-32 floating point addition
-Rounding with GRS and Rounding to the nearest even
-Can limit the number of digits
-Step by step instruction on the addition of floating point numbers
++ IEEE-754 binary-32 floating point addition
++ Rounding with GRS and Rounding to the nearest even
++ Can limit the number of digits
++ Step by step instruction on the addition of floating point numbers
 1. Initial normalization
 2. Operation
 3. Post-operation normalization
 4. Final Answer
-+ button to get a text file containing the output and the step by step instruction of the operation
++ Also includes a button to get a text file containing the output and the step by step instruction of the operation
 
 TEST CASES:
 
