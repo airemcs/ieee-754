@@ -186,6 +186,11 @@ export default function Input() {
     const isOperand1ExponentValid = /^-?\d+$/.test(operand1Exponent);
     const isOperand2ExponentValid = /^-?\d+$/.test(operand2Exponent);
   
+    setErrors({
+      operand1: !isOperand1Valid,
+      operand2: !isOperand2Valid
+    });
+    
     if (isOperand1Valid && isOperand2Valid && isOperand1ExponentValid && isOperand2ExponentValid) {
       let { normalized: operand1Normalized, newExponent: operand1NewExponent } = initialNormalize(operand1, parseInt(operand1Exponent), true);
       let { normalized: operand2Normalized, newExponent: operand2NewExponent } = initialNormalize(operand2, parseInt(operand2Exponent), false);
