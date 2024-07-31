@@ -12,9 +12,7 @@ export default function Navbar() {
       </div>
       
       <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] shadow bg-base-100 rounded-box w-32">
-      <li><a href="/" className="text-lg font-semibold">Home</a></li>
     <li><a href="https://github.com/airemcs/ieee-754" className="text-lg font-semibold">Repository</a></li>
-    <li><a href="/" className="text-lg font-semibold">About</a></li>
       </ul>
       
     </div>
@@ -26,9 +24,7 @@ export default function Navbar() {
   
   <div className="navbar-center hidden lg:flex">
   <ul className="menu menu-horizontal gap-4">
-  <li><a href="/" className="text-lg font-semibold">Home</a></li>
     <li><a href="https://github.com/airemcs/ieee-754" className="text-lg font-semibold">Repository</a></li>
-    <li><a href="/" className="text-lg font-semibold">About</a></li>
   </ul>
   </div>
   
